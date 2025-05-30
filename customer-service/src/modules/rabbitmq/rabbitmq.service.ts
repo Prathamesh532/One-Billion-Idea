@@ -10,7 +10,7 @@ export class RabbitMQService implements OnModuleInit, OnModuleDestroy {
   private channel: amqp.Channel | null = null;
   private readonly queueName = 'order_events';
   private readonly exchangeName = 'order_exchange';
-  private readonly routingKey = 'order.created';
+  private readonly routingKey = 'order.*';
 
   constructor(
     private readonly orderHistoryService: OrderHistoryService,
@@ -49,6 +49,7 @@ export class RabbitMQService implements OnModuleInit, OnModuleDestroy {
         this.queueName,
         this.exchangeName,
         this.routingKey,
+        {}, // Add empty arguments object
       );
 
       await this.consumeOrderEvents();

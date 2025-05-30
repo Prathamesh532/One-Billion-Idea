@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
 import { gql, request } from "graphql-request";
 import toast from "react-hot-toast";
+import { useOrderWebSocket } from "@/hooks/useOrderWebSocket";
 
 const GET_ORDERS = gql`
   query OrdersByCustomer($customerId: String!) {
@@ -38,12 +39,32 @@ export default function Orders() {
 
   const customerId = "customer123"; // Replace with real user ID from auth
 
+  // Initialize WebSocket connections for all orders
+  const [orderStatusUpdates, setOrderStatusUpdates] = useState({});
+
+  // Update orders when status updates come in
+  useEffect(() => {
+    setOrders((prevOrders) =>
+      prevOrders.map((order) => ({
+        ...order,
+        status: orderStatusUpdates[order._id] || order.status,
+      }))
+    );
+  }, [orderStatusUpdates]);
+
   const fetchOrders = async () => {
     try {
       const data = await request("http://localhost:3001/graphql", GET_ORDERS, {
         customerId,
       });
       setOrders(data.ordersByCustomer);
+
+      // Initialize status updates for all orders
+      const initialUpdates = data.ordersByCustomer.reduce((acc, order) => {
+        acc[order._id] = order.status;
+        return acc;
+      }, {});
+      setOrderStatusUpdates(initialUpdates);
     } catch (err) {
       toast.error("Failed to load orders");
       console.error(err);
@@ -55,6 +76,22 @@ export default function Orders() {
   useEffect(() => {
     fetchOrders();
   }, []);
+
+  // WebSocket hook for each order
+  const OrderStatusListener = ({ orderId }) => {
+    const { status } = useOrderWebSocket(orderId);
+
+    useEffect(() => {
+      if (status) {
+        setOrderStatusUpdates((prev) => ({
+          ...prev,
+          [orderId]: status,
+        }));
+      }
+    }, [status, orderId]);
+
+    return null;
+  };
 
   const handleCancelOrder = async (orderId) => {
     const confirmed = window.confirm(
@@ -69,7 +106,12 @@ export default function Orders() {
         status: "CANCELLED",
       });
       toast.success("Order cancelled successfully");
-      fetchOrders();
+
+      // Optimistic update
+      setOrderStatusUpdates((prev) => ({
+        ...prev,
+        [orderId]: "CANCELLED",
+      }));
     } catch (err) {
       const errorMessage =
         err.response?.errors?.[0]?.message || "Failed to cancel order";
@@ -80,7 +122,6 @@ export default function Orders() {
     }
   };
 
-  // Merge real-time updates with query data
   const filteredOrders =
     filterStatus === "ALL"
       ? orders
@@ -110,6 +151,14 @@ export default function Orders() {
           </select>
         </div>
 
+        {/* Render status listeners for all orders */}
+        {orders.map((order) => (
+          <OrderStatusListener
+            key={`listener-${order._id}`}
+            orderId={order._id}
+          />
+        ))}
+
         {loading ? (
           <p>Loading...</p>
         ) : orders.length === 0 ? (
@@ -127,11 +176,11 @@ export default function Orders() {
                     className={`text-sm px-3 py-1 rounded-full ${
                       order.status === "PENDING"
                         ? "bg-yellow-200 text-yellow-700"
-                        : order.status === "COMPLETED"
+                        : order.status === "DELIVERED"
                         ? "bg-green-200 text-green-700"
                         : order.status === "CANCELLED"
                         ? "bg-red-200 text-red-700"
-                        : "bg-gray-200 text-gray-700"
+                        : "bg-blue-200 text-blue-700"
                     }`}
                   >
                     {order.status}

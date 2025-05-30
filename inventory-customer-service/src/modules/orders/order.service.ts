@@ -12,6 +12,8 @@ import { ProductService } from '../products/product.service';
 // import { RabbitMQService } from '../rabbitmq/rabbitmq.service';
 import { OrderEvent } from '../../common/interfaces/order-event.interface';
 import { PubSub } from 'graphql-subscriptions';
+import { Inject } from '@nestjs/common/decorators';
+import { ClientProxy } from '@nestjs/microservices';
 
 @Injectable()
 export class OrderService {
@@ -19,6 +21,7 @@ export class OrderService {
 
   constructor(
     @InjectModel(Order.name) private orderModel: Model<OrderDocument>,
+    @Inject('ORDER_SERVICE') private readonly client: ClientProxy,
     private productService: ProductService,
     // private rabbitMQService: RabbitMQService,
   ) {}
@@ -116,9 +119,10 @@ export class OrderService {
       throw new NotFoundException(`Order with ID ${id} not found`);
     }
 
-    // Publish subscription update
-    this.pubSub.publish('orderStatusUpdated', {
-      orderStatusUpdated: updatedOrder,
+    this.client.emit('order_updated', {
+      orderId: id,
+      status,
+      timestamp: new Date().toISOString(),
     });
 
     return updatedOrder;
