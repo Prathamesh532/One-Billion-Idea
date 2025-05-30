@@ -44,9 +44,4 @@ export class CreateCustomerDto {
   @IsOptional()
   @IsString()
   zipCode?: string;
-
-  @Field({ defaultValue: 'customer' }) // optional: allow role selection if needed
-  @IsOptional()
-  @IsString()
-  role?: string;
 }

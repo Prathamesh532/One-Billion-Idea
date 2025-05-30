@@ -31,7 +31,7 @@ export class Product {
   category: string;
 
   @Field({ nullable: true })
-  @Prop()
+  @Prop({ required: true })
   imageUrl?: string;
 
   @Field()

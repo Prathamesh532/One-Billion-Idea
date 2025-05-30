@@ -9,7 +9,7 @@ import { Order, OrderDocument } from './schemas/order.schema';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { OrderStatus } from '../../common/enum/order-status.enum';
 import { ProductService } from '../products/product.service';
-import { RabbitMQService } from '../rabbitmq/rabbitmq.service';
+// import { RabbitMQService } from '../rabbitmq/rabbitmq.service';
 import { OrderEvent } from '../../common/interfaces/order-event.interface';
 import { PubSub } from 'graphql-subscriptions';
 
@@ -20,7 +20,7 @@ export class OrderService {
   constructor(
     @InjectModel(Order.name) private orderModel: Model<OrderDocument>,
     private productService: ProductService,
-    private rabbitMQService: RabbitMQService,
+    // private rabbitMQService: RabbitMQService,
   ) {}
 
   async create(createOrderDto: CreateOrderDto): Promise<Order> {
@@ -81,7 +81,7 @@ export class OrderService {
       createdAt: savedOrder.createdAt,
     };
 
-    await this.rabbitMQService.publishOrderEvent(orderEvent);
+    // await this.rabbitMQService.publishOrderEvent(orderEvent);
 
     // Publish subscription update
     this.pubSub.publish('orderStatusUpdated', {

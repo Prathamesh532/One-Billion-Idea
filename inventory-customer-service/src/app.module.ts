@@ -4,7 +4,7 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ProductModule } from './modules/products/product.module';
 import { OrderModule } from './modules/orders/order.module';
-import { RabbitMQModule } from './modules/rabbitmq/rabbitmq.module';
+// import { RabbitMQModule } from './modules/rabbitmq/rabbitmq.module';
 import { ConfigModule } from '@nestjs/config';
 
 @Module({
@@ -28,7 +28,7 @@ import { ConfigModule } from '@nestjs/config';
     }),
     ProductModule,
     OrderModule,
-    RabbitMQModule,
+    // RabbitMQModule,
   ],
 })
 export class AppModule {}

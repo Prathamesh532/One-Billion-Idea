@@ -39,7 +39,7 @@ export class RabbitMQService implements OnModuleInit, OnModuleDestroy {
         throw new Error('Failed to create RabbitMQ channel.');
       }
 
-      await this.channel.assertExchange(this.exchangeName, 'direct', {
+      await this.channel.assertExchange(this.exchangeName, 'topic', {
         durable: true,
       });
 

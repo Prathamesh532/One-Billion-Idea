@@ -32,7 +32,6 @@ export class CreateProductDto {
   category: string;
 
   @Field({ nullable: true })
-  @IsOptional()
   @IsString()
   imageUrl?: string;
 
