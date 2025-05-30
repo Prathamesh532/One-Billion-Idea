@@ -59,9 +59,7 @@ export class ProductService {
   }
 
   async remove(id: string): Promise<Product> {
-    const deletedProduct = await this.productModel
-      .findByIdAndUpdate(id, { isActive: false }, { new: true })
-      .exec();
+    const deletedProduct = await this.productModel.findByIdAndDelete(id).exec();
 
     if (!deletedProduct) {
       throw new NotFoundException(`Product with ID ${id} not found`);

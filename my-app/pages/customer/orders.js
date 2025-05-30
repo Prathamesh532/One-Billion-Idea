@@ -153,7 +153,10 @@ export default function Orders() {
                   )}
                 </div>
                 <p className="text-sm text-gray-600 mb-1">
-                  Placed on: {new Date(order.createdAt).toLocaleString()}
+                  Placed on:{" "}
+                  {new Intl.DateTimeFormat("en-GB").format(
+                    new Date(order.createdAt)
+                  )}
                 </p>
                 <p className="text-sm mb-3">
                   Shipping Address:{" "}

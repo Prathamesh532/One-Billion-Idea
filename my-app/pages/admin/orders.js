@@ -55,6 +55,7 @@ const OrdersPage = () => {
       );
       alert("Order status updated successfully");
       // refetch data here if needed
+      fetchOrders();
     } catch (error) {
       alert(`Error: ${error.message}`);
     }
@@ -95,12 +96,16 @@ const OrdersPage = () => {
                 <td className="border px-4 py-2">
                   <span
                     className={`inline-block px-3 py-1 rounded-full text-white text-xs font-semibold ${
-                      order.status === "Pending"
+                      order.status === "PENDING"
                         ? "bg-orange-500"
-                        : order.status === "Shipped"
+                        : order.status === "SHIPPED"
                         ? "bg-blue-500"
-                        : order.status === "Delivered"
+                        : order.status === "DELIVERED"
                         ? "bg-green-500"
+                        : order.status === "PROCESSING"
+                        ? "bg-yellow-500"
+                        : order.status === "CONFIRMED"
+                        ? "bg-purple-500"
                         : "bg-red-500"
                     }`}
                   >
@@ -108,7 +113,9 @@ const OrdersPage = () => {
                   </span>
                 </td>
                 <td className="border px-4 py-2 text-gray-600">
-                  {new Date(order.createdAt).toLocaleDateString()}
+                  {new Intl.DateTimeFormat("en-GB").format(
+                    new Date(order.createdAt)
+                  )}
                 </td>
                 <td className="border px-4 py-2">
                   <div className="flex flex-col items-center gap-2">
@@ -126,6 +133,8 @@ const OrdersPage = () => {
                       className="border rounded px-3 py-1 text-sm"
                     >
                       <option value="Pending">Pending</option>
+                      <option value="Confirmed">Confirmed</option>
+                      <option value="Processing">Processing</option>
                       <option value="Shipped">Shipped</option>
                       <option value="Delivered">Delivered</option>
                       <option value="Cancelled">Cancelled</option>
@@ -179,7 +188,9 @@ const OrdersPage = () => {
                 </div>
                 <div>
                   <strong>Date:</strong>{" "}
-                  {new Date(selectedOrder.createdAt).toLocaleString()}
+                  {new Intl.DateTimeFormat("en-GB").format(
+                    new Date(selectedOrder.createdAt)
+                  )}
                 </div>
               </div>
             </div>

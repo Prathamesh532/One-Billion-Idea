@@ -65,13 +65,15 @@ export default function ProfilePage() {
 
   const router = useRouter();
 
-  useEffect(() => {
-    if (!authLoading && !isAuthenticated) {
-      // router.push("/login");
-    }
-  }, [isAuthenticated, authLoading, router]);
+  // useEffect(() => {
+  //   if (!authLoading && !isAuthenticated) {
+  //     router.push("/login");
+  //   }
+  // }, [isAuthenticated, authLoading, router]);
 
   const fetchProfile = async () => {
+    let token = localStorage.getItem("token");
+
     try {
       const headers = {
         Authorization: `Bearer ${token}`,
