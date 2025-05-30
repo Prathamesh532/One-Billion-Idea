@@ -1,12 +1,17 @@
 import Link from "next/link";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { CartContext } from "@/lib/CartContext";
 import { useAuth } from "@/utils/AuthContext";
 
 export default function Navbar() {
   const { cartItems } = useContext(CartContext);
-
   const { isAuthenticated, logout } = useAuth();
+
+  const [isLogin, setIsLogin] = useState(false);
+
+  useEffect(() => {
+    setIsLogin(isAuthenticated);
+  }, [isAuthenticated]);
 
   return (
     <nav className="bg-white shadow px-6 py-3 flex justify-between items-center">
@@ -22,9 +27,9 @@ export default function Navbar() {
             </span>
           )}
         </Link>
-        <Link href="/customer/orders">👤 Orders</Link>
+        <Link href="/customer/orders">📦 My Orders</Link>
         <div className="flex items-center space-x-4">
-          {isAuthenticated ? (
+          {isLogin ? (
             <>
               <Link
                 href="/customer/profile"

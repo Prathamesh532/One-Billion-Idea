@@ -34,6 +34,7 @@ export default function Orders() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [cancellingOrder, setCancellingOrder] = useState(null);
+  const [filterStatus, setFilterStatus] = useState("ALL");
 
   const customerId = "customer123"; // Replace with real user ID from auth
 
@@ -79,11 +80,35 @@ export default function Orders() {
     }
   };
 
+  // Merge real-time updates with query data
+  const filteredOrders =
+    filterStatus === "ALL"
+      ? orders
+      : orders.filter((order) => order.status === filterStatus);
+
   return (
     <>
       <Navbar />
       <div className="p-6 max-w-5xl mx-auto">
-        <h2 className="text-2xl font-bold mb-6">My Orders</h2>
+        <h2 className="text-2xl font-bold mb-4">My Orders</h2>
+
+        {/* Filter Dropdown */}
+        <div className="mb-6">
+          <label className="mr-2 font-medium">Filter by status:</label>
+          <select
+            value={filterStatus}
+            onChange={(e) => setFilterStatus(e.target.value)}
+            className="border border-gray-300 px-3 py-1 rounded-md"
+          >
+            <option value="ALL">All</option>
+            <option value="PENDING">Pending</option>
+            <option value="CONFIRMED">Confirmed</option>
+            <option value="PROCESSING">Processing</option>
+            <option value="SHIPPED">Shipped</option>
+            <option value="DELIVERED">Delivered</option>
+            <option value="CANCELLED">Cancelled</option>
+          </select>
+        </div>
 
         {loading ? (
           <p>Loading...</p>
@@ -91,7 +116,7 @@ export default function Orders() {
           <p>No orders found.</p>
         ) : (
           <div className="space-y-6">
-            {orders.map((order) => (
+            {filteredOrders.map((order) => (
               <div
                 key={order._id}
                 className="border rounded-md p-4 bg-white shadow"

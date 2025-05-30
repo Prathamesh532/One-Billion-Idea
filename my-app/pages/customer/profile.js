@@ -14,7 +14,9 @@ const GET_CUSTOMER_PROFILE = gql`
       email
       phone
       address
-      # Add other fields you want to display
+      city
+      country
+      zipCode
     }
   }
 `;
@@ -28,7 +30,9 @@ const UPDATE_CUSTOMER_PROFILE = gql`
       email
       phone
       address
-      # Add other fields you want to return
+      city
+      country
+      zipCode
     }
   }
 `;
@@ -42,13 +46,22 @@ export default function ProfilePage() {
     email: "",
     phone: "",
     address: "",
+    city: "",
+    country: "",
+    zipCode: "",
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [token, setToken] = useState(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const localToken = localStorage.getItem("token");
+      setToken(localToken);
+    }
+  }, []);
 
   const { isAuthenticated, authLoading } = useAuth();
-  let token = localStorage.getItem("token");
-  console.log("token", token);
 
   const router = useRouter();
 
@@ -78,6 +91,9 @@ export default function ProfilePage() {
         email: data.me.email,
         phone: data.me.phone || "",
         address: data.me.address || "",
+        city: data.me.city || "",
+        country: data.me.country || "",
+        zipCode: data.me.zipCode || "",
       });
       setError(null);
     } catch (err) {
@@ -103,6 +119,9 @@ export default function ProfilePage() {
           email: formData.email,
           phone: formData.phone,
           address: formData.address,
+          city: formData.city,
+          country: formData.country,
+          zipCode: formData.zipCode,
         },
       };
 
@@ -171,20 +190,32 @@ export default function ProfilePage() {
                     <p className="font-medium">{customer.phone}</p>
                   </div>
                 )}
-              </div>
-            </div>
-
-            {customer.address && (
-              <div>
-                <h2 className="text-xl font-semibold mb-4">Address</h2>
-                <div className="space-y-4">
+                {customer.address && (
                   <div>
                     <p className="text-gray-500">Address</p>
                     <p className="font-medium">{customer.address}</p>
                   </div>
-                </div>
+                )}
+                {customer.city && (
+                  <div>
+                    <p className="text-gray-500">City</p>
+                    <p className="font-medium">{customer.city}</p>
+                  </div>
+                )}
+                {customer.country && (
+                  <div>
+                    <p className="text-gray-500">Country</p>
+                    <p className="font-medium">{customer.country}</p>
+                  </div>
+                )}
+                {customer.zipCode && (
+                  <div>
+                    <p className="text-gray-500">Postal Code</p>
+                    <p className="font-medium">{customer.zipCode}</p>
+                  </div>
+                )}
               </div>
-            )}
+            </div>
           </div>
 
           <div className="mt-8 flex justify-end">
@@ -312,6 +343,57 @@ export default function ProfilePage() {
                       value={formData.address}
                       onChange={handleInputChange}
                       rows={3}
+                      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="city"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      City
+                    </label>
+                    <input
+                      type="text"
+                      id="city"
+                      name="city"
+                      value={formData.city}
+                      onChange={handleInputChange}
+                      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="country"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Country
+                    </label>
+                    <input
+                      type="text"
+                      id="country"
+                      name="country"
+                      value={formData.country}
+                      onChange={handleInputChange}
+                      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="zipCode"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Zip Code
+                    </label>
+                    <input
+                      type="number"
+                      id="zipCode"
+                      name="zipCode"
+                      value={formData.zipCode}
+                      onChange={handleInputChange}
                       className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                     />
                   </div>

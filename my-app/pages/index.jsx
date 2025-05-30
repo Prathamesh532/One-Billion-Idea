@@ -36,15 +36,17 @@ import Link from "next/link";
 export default function Home() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-700">
-      <h1 className="text-4xl font-bold mb-4">Welcome to the Store</h1>
-      <p className="mb-8">Choose your role:</p>
+      <h1 className="text-4xl font-bold mb-4 text-white">
+        Welcome to the Store
+      </h1>
+      <p className="mb-8 text-white">Choose your role:</p>
       <div className="space-x-4">
-        <Link href="/customer/login">
+        <Link href="/login">
           <button className="bg-blue-600 text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-700">
             Customer
           </button>
         </Link>
-        <Link href="/admin/login">
+        <Link href="/admin/products">
           <button className="bg-green-700 text-white px-4 py-2 rounded cursor-pointer hover:bg-green-800">
             Admin
           </button>

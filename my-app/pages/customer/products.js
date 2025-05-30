@@ -13,6 +13,7 @@ const PRODUCTS_QUERY = gql`
       price
       stock
       imageUrl
+      isActive
     }
   }
 `;
@@ -23,9 +24,14 @@ export default function ProductList() {
   const { addToCart } = useContext(CartContext);
 
   useEffect(() => {
-    request("http://localhost:3001/graphql", PRODUCTS_QUERY).then((data) =>
-      setProducts(data.products)
-    );
+    request("http://localhost:3001/graphql", PRODUCTS_QUERY).then((data) => {
+      const activeProducts = data.products.filter(
+        (product) => product.isActive
+      );
+      console.log("activeProducts", activeProducts);
+      
+      setProducts(activeProducts);
+    });
   }, []);
 
   const handleQuantityChange = (id, value) => {

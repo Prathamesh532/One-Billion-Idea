@@ -2,22 +2,8 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import toast from "react-hot-toast";
-import { gql, GraphQLClient } from "graphql-request";
 import jwtDecode from "jwt-decode";
-
-const LOGIN = gql`
-  mutation Login($email: String!, $password: String!) {
-    login(loginCustomerDto: { email: $email, password: $password }) {
-      access_token
-      customer {
-        _id
-        firstName
-        lastName
-        email
-      }
-    }
-  }
-`;
+import { useAuth } from "@/utils/AuthContext";
 
 export default function Login() {
   const router = useRouter();
@@ -25,11 +11,26 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    console.log("Checking token...");
-    const token = localStorage.getItem("token");
-    console.log(token);
+  const { login } = useAuth();
 
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    try {
+      await login(e, email, password);
+      toast.success("Login successful!");
+      router.push("/customer/products");
+    } catch (error) {
+      console.error(error);
+      toast.error(error.response?.errors[0]?.message || "Login failed!");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
     if (token != undefined) {
       try {
         const decoded = jwtDecode(token);
@@ -44,25 +45,6 @@ export default function Login() {
       }
     }
   }, []);
-
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-
-    try {
-      const client = new GraphQLClient("http://localhost:3002/graphql");
-      const data = await client.request(LOGIN, { email, password });
-
-      localStorage.setItem("token", data.login.access_token);
-      toast.success("Login successful!");
-      router.push("/customer/products");
-    } catch (error) {
-      console.error(error);
-      toast.error(error.response?.errors[0]?.message || "Login failed!");
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   return (
     <div className="min-h-screen flex flex-col justify-center items-center bg-gray-700">
