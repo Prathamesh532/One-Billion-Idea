@@ -75,19 +75,24 @@ export class OrderService {
     }
 
     // Publish order event to RabbitMQ
-    const orderEvent: OrderEvent = {
+    const orderEvent = {
       orderId: savedOrder._id.toString(),
-      customerId: savedOrder.customerId,
-      items: savedOrder.items,
+      customerId: savedOrder.customerId.toString(),
+      items: savedOrder.items.map((item) => ({
+        productId: item.productId.toString(),
+        productName: item.productName,
+        quantity: item.quantity,
+        price: item.price,
+        total: item.price * item.quantity,
+      })),
       totalAmount: savedOrder.totalAmount,
+      shippingAddress: savedOrder.shippingAddress,
+      notes: savedOrder.notes || null,
       status: savedOrder.status,
-      createdAt: savedOrder.createdAt,
+      createdAt: savedOrder.createdAt.toISOString(),
     };
 
-    // Publish subscription update
-    this.pubSub.publish('orderStatusUpdated', {
-      orderStatusUpdated: savedOrder,
-    });
+    this.client.emit('order_created', orderEvent);
 
     return savedOrder;
   }

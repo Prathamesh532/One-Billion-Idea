@@ -17,4 +17,8 @@ export class OrdersGateway {
   sendOrderUpdate(data: { orderId: string; status: string }) {
     this.server.to(`order_${data.orderId}`).emit('order_update', data);
   }
+
+  sendOrderCreate(data: { orderId: string; status: string }) {
+    this.server.to(`order_${data.orderId}`).emit('order_create', data);
+  }
 }

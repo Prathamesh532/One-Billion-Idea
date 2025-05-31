@@ -49,14 +49,15 @@ export class OrderWebSocketGateway implements OnGatewayInit {
       this.logger.log(
         `Queue bound to exchange with routing pattern 'order.status.*'`,
       );
-
+      await this.channel.bindQueue(queue.queue, exchange, 'order.*');
       this.channel.consume(queue.queue, (msg) => {
         if (msg) {
           this.logger.debug(`Received message: ${msg.content.toString()}`);
           const message = JSON.parse(msg.content.toString());
+          const eventType = msg.fields.routingKey;
           this.server
             .to(`order_${message.orderId}`)
-            .emit('order_update', message);
+            .emit(eventType.replace('order.', 'order_'), message);
           this.channel.ack(msg);
         }
       });
@@ -80,6 +81,10 @@ export class OrderWebSocketGateway implements OnGatewayInit {
 
   sendOrderUpdate(data: { orderId: string; status: string }) {
     this.server.to(`order_${data.orderId}`).emit('order_update', data);
+  }
+
+  sendOrderCreate(data: { orderId: string; status: string }) {
+    this.server.to(`order_${data.orderId}`).emit('order_create', data);
   }
 
   @SubscribeMessage('subscribe_order')

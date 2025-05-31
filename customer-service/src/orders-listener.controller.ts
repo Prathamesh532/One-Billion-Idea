@@ -13,4 +13,10 @@ export class OrdersListenerController {
     this.logger.log(`Order updated event received: ${JSON.stringify(data)}`);
     this.ordersGateway.sendOrderUpdate(data);
   }
+
+  @EventPattern('order_created')
+  async handleOrderCreated(@Payload() data: any) {
+    this.logger.log(`Order created event received: ${JSON.stringify(data)}`);
+    this.ordersGateway.sendOrderCreate(data);
+  }
 }

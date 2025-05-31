@@ -20,7 +20,7 @@ export default function Login() {
     try {
       await login(e, email, password);
       toast.success("Login successful!");
-      router.push("/customer/products");
+      // router.push("/customer/products");
     } catch (error) {
       console.error(error);
       toast.error(error.response?.errors[0]?.message || "Login failed!");
@@ -75,7 +75,7 @@ export default function Login() {
         </form>
         <p className="mt-4 text-sm text-center">
           Don't have an account?{" "}
-          <Link href="/customer/register" className="text-blue-600 underline">
+          <Link href="/register" className="text-blue-600 underline">
             Register
           </Link>
         </p>

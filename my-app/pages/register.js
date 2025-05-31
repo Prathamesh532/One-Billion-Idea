@@ -110,13 +110,13 @@ export default function Register() {
 
       const data = await client.request(REGISTER, variables);
 
-      localStorage.setItem("token", data.register.access_token);
+      // localStorage.setItem("token", data.register.access_token);
       toast.dismiss();
       toast.success("Registration successful! Redirecting...");
 
       // Redirect after a short delay to show the success message
       setTimeout(() => {
-        router.push("/customer/products");
+        router.push("/login");
       }, 1500);
     } catch (error) {
       console.error("Registration error:", error);
