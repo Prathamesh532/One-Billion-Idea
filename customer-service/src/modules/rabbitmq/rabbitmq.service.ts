@@ -1,7 +1,6 @@
 import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
 import * as amqp from 'amqplib'; // Import the entire namespace
 import { OrderEvent } from '../../common/interfaces/order-event.interface';
-import { OrderHistoryService } from '../order-history/order-history.service';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
@@ -12,10 +11,7 @@ export class RabbitMQService implements OnModuleInit, OnModuleDestroy {
   private readonly exchangeName = 'order_exchange';
   private readonly routingKey = 'order.*';
 
-  constructor(
-    private readonly orderHistoryService: OrderHistoryService,
-    private readonly configService: ConfigService,
-  ) {}
+  constructor(private readonly configService: ConfigService) {}
 
   async onModuleInit() {
     await this.init();
@@ -49,7 +45,7 @@ export class RabbitMQService implements OnModuleInit, OnModuleDestroy {
         this.queueName,
         this.exchangeName,
         this.routingKey,
-        {}, // Add empty arguments object
+        {},
       );
 
       await this.consumeOrderEvents();
@@ -82,7 +78,6 @@ export class RabbitMQService implements OnModuleInit, OnModuleDestroy {
           try {
             const content = message.content.toString();
             const orderEvent: OrderEvent = JSON.parse(content);
-            await this.orderHistoryService.createFromOrderEvent(orderEvent);
             this.channel!.ack(message);
           } catch (error) {
             console.error('Message processing failed:', error);

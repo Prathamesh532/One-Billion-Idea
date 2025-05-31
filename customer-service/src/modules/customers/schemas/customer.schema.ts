@@ -45,8 +45,8 @@ export class Customer {
   @Prop()
   zipCode?: string;
 
-  @Prop({ default: 'customer' }) // default role
-  role: 'customer' | 'admin'; // Add as many roles as needed
+  @Prop({ default: 'customer' })
+  role: 'customer' | 'admin';
 
   @Field()
   @Prop({ default: true })

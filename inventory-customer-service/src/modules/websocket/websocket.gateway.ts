@@ -76,10 +76,8 @@ export class OrderWebSocketGateway implements OnGatewayInit {
   @SubscribeMessage('subscribe_order')
   handleOrderSubscription(@MessageBody() data: { orderId: string }) {
     console.log(`Subscribed to order ID: ${data.orderId}`);
-    // Store or map client to orderId if needed
   }
 
-  // You can use this to emit updates manually:
   sendOrderUpdate(data: { orderId: string; status: string }) {
     this.server.to(`order_${data.orderId}`).emit('order_update', data);
   }

@@ -4,7 +4,7 @@ import { OrdersGateway } from './orders.gateway';
 
 @Module({
   controllers: [OrdersListenerController],
-  providers: [OrdersGateway], // <--- This is critical!
-  exports: [OrdersGateway], // optional, if you need to use it elsewhere
+  providers: [OrdersGateway],
+  exports: [OrdersGateway],
 })
 export class OrdersModule {}

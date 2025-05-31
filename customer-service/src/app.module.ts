@@ -4,7 +4,6 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
 import { CustomerModule } from './modules/customers/customer.module';
-import { OrderHistoryModule } from './modules/order-history/order-history.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { RabbitMQModule } from './modules/rabbitmq/rabbitmq.module';
 import { OrdersListenerController } from './orders-listener.controller';
@@ -26,11 +25,10 @@ import { OrdersModule } from './orders.module';
       context: ({ req, res }) => ({ req, res }),
     }),
     CustomerModule,
-    OrderHistoryModule,
     AuthModule,
     RabbitMQModule,
     OrdersModule,
   ],
-  controllers: [OrdersListenerController], // <-- Add controllers here, not in imports
+  controllers: [OrdersListenerController],
 })
 export class AppModule {}

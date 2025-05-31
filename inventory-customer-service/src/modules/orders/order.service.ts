@@ -84,8 +84,6 @@ export class OrderService {
       createdAt: savedOrder.createdAt,
     };
 
-    // await this.rabbitMQService.publishOrderEvent(orderEvent);
-
     // Publish subscription update
     this.pubSub.publish('orderStatusUpdated', {
       orderStatusUpdated: savedOrder,

@@ -4,7 +4,7 @@ import { OrdersListenerController } from '../order-events.controller';
 import { RabbitMQModule } from '../rabbitmq/rabbitmq.module'; // Add this
 
 @Module({
-  imports: [RabbitMQModule], // Add RabbitMQModule import
+  imports: [RabbitMQModule],
   controllers: [OrdersListenerController],
   providers: [OrderWebSocketGateway],
 })

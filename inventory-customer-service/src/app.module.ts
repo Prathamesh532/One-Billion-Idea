@@ -13,10 +13,7 @@ import { WebSocketModule } from './modules/websocket/websocket.module';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    MongooseModule.forRoot(
-      process.env.MONGODB_URI ||
-        'mongodb+srv://kalekarprathamesh130:pk%40123D@cluster1.ywbqb2v.mongodb.net/?retryWrites=true&w=majority&appName=Cluster1',
-    ),
+    MongooseModule.forRoot(process.env.MONGODB_URI),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: true,
